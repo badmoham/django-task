@@ -7,4 +7,8 @@ class ProductQuerySet(QuerySet):
         return self.filter(stock__lt=10)
 
     def in_stock(self):
-        return self
+        """
+        returns a queryset of products that are in stocks more than 0
+        (in case of negative stocks it will Not Fail)
+        """
+        return self.filter(stock__gt=0)

@@ -1,4 +1,5 @@
-from django.db.models import QuerySet
+from django.db.models import QuerySet, Sum, F
+from django.db.models.functions import Round
 
 
 class OrderQuerySet(QuerySet):
@@ -6,7 +7,10 @@ class OrderQuerySet(QuerySet):
         return self
 
     def total_price(self):
-        return self
+        total_price = self.all().annotate(
+            price_sum=Round(Sum(F('orderitem__product__price')*F('orderitem__quantity')), 2)
+        ).aggregate(sum=Sum("price_sum"))["sum"]
+        return total_price
 
     def total_price_by_customer(self, customer):
         return self

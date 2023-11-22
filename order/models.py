@@ -1,7 +1,9 @@
 from django.db import models
+from django.db.models import F, Sum
+from django.db.models.functions import Round
+
 from order.enums import OrderStatus
 from order.querysets import OrderQuerySet
-
 
 class Order(models.Model):
     customer = models.ForeignKey('user_management.Customer', on_delete=models.CASCADE)
@@ -12,7 +14,11 @@ class Order(models.Model):
     objects = OrderQuerySet.as_manager()
 
     def calculate_total_price(self):
-        return 0
+        """ will calculate total price of all products in cart with their quantity and return """
+        calculated_total_price = OrderItem.objects.filter(order=self).aggregate(
+            price_sum=Round(Sum(F('product__price')*F('quantity')), 2)
+        )
+        return calculated_total_price["price_sum"]
 
     def accept(self):
         self.status = OrderStatus.ACCEPTED

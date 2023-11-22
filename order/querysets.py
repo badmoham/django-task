@@ -1,6 +1,8 @@
+from datetime import datetime
+
 from django.db.models import QuerySet, Sum, F
 from django.db.models.functions import Round
-
+from django.utils.timezone import make_aware
 
 class OrderQuerySet(QuerySet):
     def by_customer(self, customer):
@@ -19,4 +21,4 @@ class OrderQuerySet(QuerySet):
         return total_price
 
     def submitted_in_date(self, date_value):
-        return self
+        return self.filter(date=make_aware(datetime.strptime(date_value, '%Y-%m-%d')))

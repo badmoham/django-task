@@ -47,6 +47,6 @@ class OrderItem(models.Model):
 
     def save(self, *args, **kwargs):
         """You can not modify this method"""
+        super().save(*args, **kwargs)
         self.order.total_price = self.order.calculate_total_price()
         self.order.save()
-        super().save(*args, **kwargs)

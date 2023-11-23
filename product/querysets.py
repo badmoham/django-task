@@ -11,4 +11,4 @@ class ProductQuerySet(QuerySet):
         returns a queryset of products that are in stocks more than 0
         (in case of negative stocks it will Not Fail)
         """
-        return self.filter(stock__gt=0)
+        return self.filter(stock__gte=10)
